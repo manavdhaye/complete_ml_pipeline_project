@@ -7,6 +7,7 @@ import os
 import pandas as pd
 from src.components.data_transformation import DataTransformationConfig
 from src.components.data_transformation import DataFormation
+from src.components.model_trainer import ModelTrainer,ModelTrainerConfig
 import pickle
 
 
@@ -48,7 +49,12 @@ if __name__=="__main__":
     train_data,test_data=obj.initiate_data_ingestion()
 
     dataformation=DataFormation()
-    dataformation.initiate_data_transformer(train_data,test_data)
+    train_arr,test_arr,path=dataformation.initiate_data_transformer(train_data,test_data)
+    modaltrainer=ModelTrainer()
+    result=modaltrainer.initiate_model_trainer(train_arr,test_arr)
+    print(result)
+
+
 
 
 
