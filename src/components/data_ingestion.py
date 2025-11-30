@@ -5,6 +5,11 @@ from src.exception import Custom_Exception
 import sys
 import os
 import pandas as pd
+from src.components.data_transformation import DataTransformationConfig
+from src.components.data_transformation import DataFormation
+import pickle
+
+
 @dataclass
 class DataIngestionConfig:
     train_data_path:str=os.path.join("artifacts","train.csv")
@@ -19,7 +24,8 @@ class DataINgestion:
     def initiate_data_ingestion(self):
         logging.info("Entered data ingestion methos or component")
         try:
-            df=pd.read_csv("notebook/data/laptop_data.csv")
+            with open("notebook\data\df.pkl", "rb") as f:
+                    df = pickle.load(f)
             logging.info("read a dataset as dataframe")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -29,12 +35,21 @@ class DataINgestion:
             train_set.to_csv(self.ingestion_config.train_data_path,index=False,header=True)
             test_set.to_csv(self.ingestion_config.test_data_path,index=False,header=True)
             logging.info("ingestion of data completed")
+
+            return (
+                self.ingestion_config.train_data_path,
+                self.ingestion_config.test_data_path,
+            )
         except Exception as e:
             raise Custom_Exception(e,sys)
 
-# if __name__=="__main__":
-#     obj=DataINgestion()
-#     obj.initiate_data_ingestion()
+if __name__=="__main__":
+    obj=DataINgestion()
+    train_data,test_data=obj.initiate_data_ingestion()
+
+    dataformation=DataFormation()
+    dataformation.initiate_data_transformer(train_data,test_data)
+
 
 
 
