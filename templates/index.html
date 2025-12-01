@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Laptop Price Predictor</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="container form-container">
+
+    <div class="form-card shadow-lg">
+
+        <img src="https://cdn-icons-png.flaticon.com/512/2920/2920277.png"
+             class="laptop-img" alt="Laptop">
+
+        <h2 class="text-center mb-2">
+            <i class="fas fa-laptop-code"></i> Laptop Price Predictor
+        </h2>
+        <p class="text-center subtitle">Fill all the details (all fields are mandatory)</p>
+
+        <form id="predictForm">
+
+            <div class="row">
+
+                <!-- COMPANY -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">Company *</label>
+                    <select id="company" class="form-select" required>
+                        {% for c in company %}
+                        <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- TYPE -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">Type Name *</label>
+                    <select id="typename" class="form-select" required>
+                        {% for t in typename %}
+                        <option value="{{ t }}">{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- RAM -->
+                <div class="col-md-4 mb-3">
+                    <label class="required">RAM (GB) *</label>
+                    <select id="ram" class="form-select" required>
+                        <option>2</option><option>4</option><option>6</option><option>8</option>
+                        <option>12</option><option>16</option><option>24</option>
+                        <option>32</option><option>64</option>
+                    </select>
+                </div>
+
+                <!-- WEIGHT -->
+                <div class="col-md-4 mb-3">
+                    <label class="required">Weight (kg) *</label>
+                    <input type="number" id="weight" class="form-control" required>
+                </div>
+
+                <!-- SCREEN SIZE -->
+                <div class="col-md-4 mb-3">
+                    <label class="required">Screen Size *</label>
+                    <input type="number" id="screen_size" class="form-control" required>
+                </div>
+
+                <!-- TOUCHSCREEN -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">Touchscreen *</label>
+                    <select id="touchscreen" class="form-select" required>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <!-- IPS -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">IPS *</label>
+                    <select id="ips" class="form-select" required>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <!-- RESOLUTION -->
+                <div class="col-md-12 mb-3">
+                    <label class="required">Screen Resolution *</label>
+                    <select id="resolution" class="form-select" required>
+                        <option>1920x1080</option><option>1366x768</option>
+                        <option>1600x900</option><option>3840x2160</option>
+                        <option>3200x1800</option><option>2880x1800</option>
+                        <option>2560x1600</option><option>2560x1440</option>
+                        <option>2304x1440</option>
+                    </select>
+                </div>
+
+                <!-- CPU -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">CPU Brand *</label>
+                    <select id="cpu" class="form-select" required>
+                        {% for c in cpu %}
+                        <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- GPU -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">GPU Brand *</label>
+                    <select id="gpu" class="form-select" required>
+                        {% for g in gpu %}
+                        <option value="{{ g }}">{{ g }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- OS -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">Operating System *</label>
+                    <select id="os" class="form-select" required>
+                        {% for o in os %}
+                        <option value="{{ o }}">{{ o }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- SSD -->
+                <div class="col-md-6 mb-3">
+                    <label class="required">SSD (GB) *</label>
+                    <select id="ssd" class="form-select" required>
+                        <option>0</option><option>8</option><option>128</option>
+                        <option>256</option><option>512</option><option>1024</option>
+                    </select>
+                </div>
+
+                <!-- HDD -->
+                <div class="col-md-12 mb-4">
+                    <label class="required">HDD (GB) *</label>
+                    <select id="hdd" class="form-select" required>
+                        <option>0</option><option>128</option><option>256</option>
+                        <option>512</option><option>1024</option><option>2048</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="button" onclick="predictPrice()" class="btn btn-primary w-100">
+                <i class="fas fa-robot"></i> Predict Price
+            </button>
+        </form>
+
+        <div id="loader" class="loader"></div>
+
+        <h3 id="result" class="text-center price-output"></h3>
+
+    </div>
+
+</div>
+
+
+<script>
+function predictPrice() {
+
+    let requiredFields = [
+        'company','typename','ram','weight','screen_size',
+        'touchscreen','ips','resolution','cpu','gpu','os','ssd','hdd'
+    ];
+
+    // Validation
+    for (let f of requiredFields) {
+        if (!document.getElementById(f).value) {
+            alert("Please fill all required fields.");
+            return;
+        }
+    }
+
+    document.getElementById("loader").style.display = "block";
+
+    const data = {
+        company: company.value,
+        typename: typename.value,
+        ram: ram.value,
+        weight: weight.value,
+        screen_size: screen_size.value,
+        touchscreen: touchscreen.value,
+        ips: ips.value,
+        resolution: resolution.value,
+        cpu: cpu.value,
+        gpu: gpu.value,
+        os: os.value,
+        ssd: ssd.value,
+        hdd: hdd.value
+    };
+
+    fetch("/predict", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(result => {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("result").innerHTML = 
+            `Predicted Price: <span class="price">₹${result.price}</span>`;
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* Background Image */
+.background {
+    background-image: url('https://images.unsplash.com/photo-1517336714731-489689fd1ca8');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.55);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Form Container */
+.form-container {
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+/* Glass Form Card */
+.form-card {
+    background: rgba(255,255,255,0.80);
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 18px;
+    max-width: 700px;
+    margin: auto;
+    animation: fadeIn 0.9s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+}
+
+.laptop-img {
+    width: 120px;
+    display: block;
+    margin: 0 auto 15px;
+}
+
+.required {
+    font-weight: 600;
+}
+
+.required::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}
+
+.price-output {
+    margin-top: 20px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #005eff;
+}
+
+/* Loader */
+.loader {
+    display: none;
+    margin: 20px auto;
+    border: 5px solid #ddd;
+    border-top: 5px solid #0066ff;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
