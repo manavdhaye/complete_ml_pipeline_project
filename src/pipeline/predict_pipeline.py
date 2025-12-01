@@ -4,6 +4,8 @@ from src.utils import load_object
 import os
 import sys
 import pandas as pd
+import math
+import numpy as np
 
 class PredictPipeline:
     def __init__(self):
@@ -20,8 +22,9 @@ class PredictPipeline:
             preprocessor=load_object(preprocessor_path)
             data_scaled=preprocessor.transform(features)
             result=model.predict(data_scaled)
+            output=math.floor(np.exp(result[0]))
             logging.info("result display of prediction")
-            return result
+            return output
         except Exception as e:
             raise Custom_Exception(e,sys)
 
